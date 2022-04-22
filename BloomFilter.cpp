@@ -1,4 +1,3 @@
-
 #include "BloomFilter.h"
 #include <iostream>
 
@@ -11,10 +10,15 @@ BloomFilter::BloomFilter(int numCells, vector<HashFunction> funcs){
     numOfCells = numCells;
     hashFunctions = funcs;
     filtro.resize(numCells,false);
+
 }
 
 vector<bool>BloomFilter::getFiltro(){
     return filtro;
+}
+void BloomFilter::changeBit(int index){
+    filtro[index]=1;
+    return;
 }
 
 void BloomFilter::add(string str){
@@ -35,10 +39,11 @@ bool BloomFilter::search(string str){
     }
     return inSet;
 }
-vector<bool> BloomFilter::print(){
-    for (vector<bool>::iterator i = filtro.begin(); i != filtro.end(); i++) {
-        cout << *i<<" ";
+void BloomFilter::print(){
+    for (int i = 0; i < filtro.size(); i++) {
+        cout << filtro[i]<<" ";
     }
+    return;
 }
 
 BloomFilter::BloomFilter() {}
