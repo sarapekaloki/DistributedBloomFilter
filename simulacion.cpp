@@ -3,7 +3,7 @@
 #include <vector>
 #include <cmath>
 #include "BloomFilter.h"
-
+#include <algorithm>
 using namespace std;
 typedef int (*HashFunction)(string);
 
