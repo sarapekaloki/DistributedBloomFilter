@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include "BloomFilter.h"
+
 using namespace std;
 typedef int (*HashFunction)(string);
 
@@ -62,11 +63,14 @@ public:
             if (!filter2.search(*i)){
                 count++;
                 cout<< *i <<" No encontrado "<<endl;
+            }else {
+
             }
         }
         cout<< "Usuarios no encontrados "<<count<<endl;
         return;
     }
+
 
 };
 //FUNCIONES HASH
@@ -124,15 +128,22 @@ int main(){
     vector<string> set({});
     vector<string> set1({});
     vector<string> set2({});
-    ifstream ip ("C:/Users/SARAMARQUEZ/Desktop/Ing Ciencias Computacionales/6to Semestre/Algoritmos/BloomFilter/nombres.csv");
+    ifstream ip ("/Users/saramarquez/Documents/ICC/6TO/Analisis de algoritmos/BloomFilter/nombres.csv");
 
     vector<HashFunction> functionsAB;
+    vector<HashFunction> functionsBC;
+
+
     functionsAB.push_back(hash1);
     functionsAB.push_back(hash2);
+    functionsBC.push_back(hash3);
+    functionsBC.push_back(hash4);
+
 
     BloomFilter filterA (bloomsz,functionsAB);
     BloomFilter filterB (bloomsz,functionsAB);
-    BloomFilter filterC (bloomsz,functionsAB);
+    BloomFilter filterB2 (bloomsz,functionsBC);
+    BloomFilter filterC (bloomsz,functionsBC);
 
     if(!ip.is_open()){
         cout << "error";
@@ -166,13 +177,21 @@ int main(){
     cout <<"Checando busqueda..."<<endl;
     a_b.searchTest();
 
+    set1.insert(set1.end(),set.begin(),set.end());
+
+    for (int i = 0; i < set1.size(); ++i) {
+        filterB2.add(set1[i]);
+    }
+    cout <<"................................................"<<endl;
+
+
     //NODO B Y C
-    cout<< "COMENZANDO COMUNICACION ENTRE NODO A Y B"<<endl;
-    Simulacion b_c (set,set1,filterA,filterB);
-    a_b.checkEquality();
+    cout<< "COMENZANDO COMUNICACION ENTRE NODO B Y C"<<endl;
+    Simulacion b_c (set1,set2,filterB2,filterC);
+    b_c.checkEquality();
     cout <<"................................................"<<endl;
     cout <<"Checando busqueda..."<<endl;
-    a_b.searchTest();
+    b_c.searchTest();
 
     return 0;
 };
