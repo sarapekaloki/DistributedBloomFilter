@@ -23,16 +23,14 @@ void BloomFilter::changeBit(int index){
 
 void BloomFilter::add(string str){
     for (vector<HashFunction>::iterator i = hashFunctions.begin(); i != hashFunctions.end(); i++) {
-//            cout << str << (*i)(str) << "\n";
-//            cout << str << (*i)(str) % numOfCells << "\n";
-        filtro[(*i)(str) % numOfCells] = true;
+        filtro[(*i)(str)] = true;
     }
 }
 
 bool BloomFilter::search(string str){
     bool inSet = true;
     for (vector<HashFunction>::iterator i = hashFunctions.begin(); i != hashFunctions.end(); i++) {
-        if (filtro[(*i)(str) % numOfCells] == false) {
+        if (filtro[(*i)(str)] == false) {
             inSet = false;
             break;
         }
