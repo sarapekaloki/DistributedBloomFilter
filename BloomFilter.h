@@ -1,7 +1,3 @@
-//
-// Created by Sara Marquez on 21/04/22.
-//
-
 #ifndef BLOOMFILTER_BLOOMFILTER_H
 #define BLOOMFILTER_BLOOMFILTER_H
 
@@ -28,7 +24,8 @@ public:
 
     void add(string str);
     bool search(string str);
-    vector<bool> print();
+    void print();
+    void changeBit(int index);
     vector<bool> getFiltro();
 };
 
