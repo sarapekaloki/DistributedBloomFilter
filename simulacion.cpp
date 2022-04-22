@@ -5,62 +5,66 @@
 #include "BloomFilter.h"
 using namespace std;
 typedef int (*HashFunction)(string);
+
+
 class Simulacion{
     vector<string> data1;
     vector<string> data2;
     BloomFilter filter1;
     BloomFilter filter2;
 private:
-    void createMap(BloomFilter filter,vector<string> data){
-        for (vector<string>::iterator i = data.begin(); i != data.end(); i++) {
-            filter.add(*i);
-        }
-    }
 
 public:
-    Simulacion( vector<HashFunction> funcs,vector<string> vec1, vector<string> vec2,int filterSize){
+    Simulacion( vector<string> vec1, vector<string> vec2, BloomFilter f1, BloomFilter f2){
         data1 =vec1;
         data2 =vec2;
-        BloomFilter filter1(filterSize,funcs);
-        BloomFilter filter2(filterSize,funcs);
-        createMap(filter1,data1);
-        createMap(filter2,data2);
+        filter1=f1;
+        filter2=f2;
+
     }
 
     void checkEquality(){
         string mod = "Son iguales";
-        for (int i = 0; i < filter1.getFiltro().size() ; ++i) {
+        for (int i = 0; i < 1024 ; i++) {
             if (filter1.getFiltro()[i] != filter2.getFiltro()[i]){
-                string mod = "Hubo cambios";
+                mod = "Hubo cambios";
                 addData(i);
             }
+        }
         cout<<mod<<endl;
-        };
 
         return;
     }
 
     void addData(int index){
         if(filter1.getFiltro()[index]==0){
-            filter1.getFiltro()[index]=1;
+            filter1.changeBit(index);
         }
         else{
-            filter2.getFiltro()[index]=1;
+            filter2.changeBit(index);
         }
         return;
     }
 
     void searchTest(){
-            cout << "Checando elementos en el filtro 1... " <<endl;
-            for (vector<string>::iterator i = data2.begin(); i != data2.end(); i++) {
-                cout << *i + ": " << filter1.search(*i) << endl;
-            };
-            cout << "Checando elementos en el filtro 2..." <<endl;
+        cout << "Checando elementos en el filtro 1 " <<endl;
+        int count = 0;
+        for (vector<string>::iterator i = data2.begin(); i != data2.end(); i++) {
+            if (!filter1.search(*i)){
+                count++;
+                cout<< *i <<" No encontrado"<<endl;
+            }
+        }
+        cout<< "Usuarios no encontrados "<<count<<endl;
+        count = 0;
+        cout << "Checando elementos en el filtro 2..." <<endl;
         for (vector<string>::iterator i = data1.begin(); i != data1.end(); i++) {
-            cout << *i + ": " << filter2.search(*i) << endl;
-        };
-
-
+            if (!filter2.search(*i)){
+                count++;
+                cout<< *i <<" No encontrado "<<endl;
+            }
+        }
+        cout<< "Usuarios no encontrados "<<count<<endl;
         return;
     }
 
@@ -119,21 +123,56 @@ int main(){
     int cont =0;
     vector<string> set({});
     vector<string> set1({});
-    ifstream ip ("/Users/saramarquez/Documents/ICC/6TO/Analisis de algoritmos/BloomFilter/nombres.csv");
+    vector<string> set2({});
+    ifstream ip ("C:/Users/SARAMARQUEZ/Desktop/Ing Ciencias Computacionales/6to Semestre/Algoritmos/BloomFilter/nombres.csv");
+
+    vector<HashFunction> functionsAB;
+    functionsAB.push_back(hash1);
+    functionsAB.push_back(hash2);
+
+    BloomFilter filterA (bloomsz,functionsAB);
+    BloomFilter filterB (bloomsz,functionsAB);
+    BloomFilter filterC (bloomsz,functionsAB);
+
     if(!ip.is_open()){
         cout << "error";
     }
     string name;
     while (ip.good() && cont<=500){
         getline(ip,name,'\n');
+        filterA.add(name);
         set.push_back(name);
-        cont+=1;
         if (cont % 2 ==0){
+            filterB.add(name);
             set1.push_back(name);
         }
+        if (cont%3==0){
+            filterC.add(name);
+            set2.push_back(name);
+        }
+        cont+=1;
     }
     ip.close();
 
 
+
+
+
+    //NODO A Y B
+    cout<< "COMENZANDO COMUNICACION ENTRE NODO A Y B"<<endl;
+    Simulacion a_b (set,set1,filterA,filterB);
+    a_b.checkEquality();
+    cout <<"................................................"<<endl;
+    cout <<"Checando busqueda..."<<endl;
+    a_b.searchTest();
+
+    //NODO B Y C
+    cout<< "COMENZANDO COMUNICACION ENTRE NODO A Y B"<<endl;
+    Simulacion b_c (set,set1,filterA,filterB);
+    a_b.checkEquality();
+    cout <<"................................................"<<endl;
+    cout <<"Checando busqueda..."<<endl;
+    a_b.searchTest();
+
     return 0;
- };
+};
