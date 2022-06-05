@@ -19,8 +19,8 @@ Simulation::Simulation( vector<string> vec1, vector<string> vec2, BloomFilter f1
 
 void Simulation::checkEquality(){
     string mod = "Son iguales";
-    for (int i = 0; i < 1024 ; i++) {
-        if (filter1.getFiltro()[i] != filter2.getFiltro()[i]){
+    for (int i = 0; i < filter1.filter.size(); i++) {
+        if (filter1.filter[i] != filter2.filter[i]){
             mod = "Hubo cambios";
             addData(i);
         }
@@ -31,7 +31,7 @@ void Simulation::checkEquality(){
 }
 
 void Simulation::addData(int index){
-    if(filter1.getFiltro()[index]==0){
+    if(filter1.filter[index]==0){
         filter1.changeBit(index);
     }
     else{
@@ -46,22 +46,18 @@ void Simulation::searchTest(){
     for (vector<string>::iterator i = data2.begin(); i != data2.end(); i++) {
         if (!filter1.search(*i)){
             count++;
-            cout<< *i <<" No encontrado"<<endl;
         }
     }
     cout<< "Usuarios no encontrados "<<count<<endl;
     count = 0;
     cout << "Checando elementos en el filtro 2..." <<endl;
     for (vector<string>::iterator i = data1.begin(); i != data1.end(); i++) {
-        if (!filter2.search(*i)){
+        if (!filter2.search(*i)) {
             count++;
-            cout<< *i <<" No encontrado "<<endl;
-        }else {
-
         }
     }
     cout<< "Usuarios no encontrados "<<count<<endl;
+
     return;
 }
-
 
