@@ -2,35 +2,33 @@
 #include <iostream>
 
 #include <vector>
-
+#include <bitset>
 
 using namespace std;
 
 BloomFilter::BloomFilter(int numCells, vector<HashFunction> funcs){
     numOfCells = numCells;
     hashFunctions = funcs;
-    filtro.resize(numCells,false);
+
 
 }
 
-vector<bool>BloomFilter::getFiltro(){
-    return filtro;
-}
 void BloomFilter::changeBit(int index){
-    filtro[index]=1;
+    filter.set(index);
     return;
 }
 
 void BloomFilter::add(string str){
     for (vector<HashFunction>::iterator i = hashFunctions.begin(); i != hashFunctions.end(); i++) {
-        filtro[(*i)(str)] = true;
+        int index = (*i)(str) %numOfCells;
+        filter.set(index);
     }
 }
 
 bool BloomFilter::search(string str){
     bool inSet = true;
     for (vector<HashFunction>::iterator i = hashFunctions.begin(); i != hashFunctions.end(); i++) {
-        if (filtro[(*i)(str)] == false) {
+        if (filter[(*i)(str) %numOfCells] == false) {
             inSet = false;
             break;
         }
@@ -38,10 +36,11 @@ bool BloomFilter::search(string str){
     return inSet;
 }
 void BloomFilter::print(){
-    for (int i = 0; i < filtro.size(); i++) {
-        cout << filtro[i]<<" ";
+    for (int i = 0; i < filter.size(); i++) {
+        cout << filter[i]<<" ";
     }
     return;
 }
+
 
 BloomFilter::BloomFilter() {}
