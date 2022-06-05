@@ -44,7 +44,3 @@ void prueba_CheckEquality(){
     cout<<"SEARCH TEST PASSED";
     return;
 }
-//
-// Created by Sara Marquez on 22/04/22.
-//
-
