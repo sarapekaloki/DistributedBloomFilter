@@ -1,64 +1,19 @@
-//
-// Created by Sara Marquez on 22/04/22.
-//
 
 #include <iostream>
 #include <vector>
 
 #include "../include/BloomFilter.h"
 #include "../include/Simulation.h"
-#include <bitset>
+#include "../include/universalHash.h"
+
 
 #define ll long long
 
-//FUNCIONES HASH
-int bloomsz =100;
-int h1(string s)
-{
-    ll int hash = 0;
-    for (int i = 0; i < s.size(); i++)
-    {
-        hash = (hash + ((int)s[i]));
-        hash = hash % bloomsz;
-    }
-    return hash;
-}
 
 
-
-// hash 2
-int h2(string s)
-{
-    ll int hash = 1;
-    for (int i = 0; i < s.size(); i++)
-    {
-        hash = (hash + ((int)s[i]));
-    }
-    return hash % bloomsz;
-}
-
-// hash 3
-int h3(string s)
-{
-    ll int hash = 7;
-    for (int i = 0; i < s.size(); i++)
-    {
-        hash = (hash * 31 + s[i]) % bloomsz;
-    }
-    return hash % bloomsz;
-}
-// hash 4
-int h4(string s) {
-    ll int hash = 5;
-    for (int i = 0; i < s.size(); i++)
-    {
-        hash = (hash * 3 + s[i]) % bloomsz;
-    }
-    return hash % bloomsz;
-}
 
 int main(){
-
+    int bloomsz =2500000;
     int cont =0;
 
     vector<string> names1;
@@ -67,23 +22,28 @@ int main(){
 
     vector<HashFunction> functionsAB;
     vector<HashFunction> functionsBC;
+    HashFunction hash1 = h1;
+    HashFunction hash2 = h2;
+    HashFunction hash3 = h3;
+    HashFunction hash4 = h4;
 
-    functionsAB.push_back(h1);
-    functionsAB.push_back(h2);
-    functionsBC.push_back(h3);
-    functionsBC.push_back(h4);
+
+    functionsAB.push_back(hash1);
+    functionsAB.push_back(hash2);
+    functionsBC.push_back(hash3);
+    functionsBC.push_back(hash4);
 
     BloomFilter filterA (bloomsz,functionsAB);
     BloomFilter filterB (bloomsz,functionsAB);
     BloomFilter filterB2 (bloomsz,functionsBC);
     BloomFilter filterC (bloomsz,functionsBC);
-    ifstream ip ("/Users/SARAMARQUEZ/Desktop/Ing Ciencias Computacionales/6to Semestre/Algoritmos/dataset/modNames.csv");
+    ifstream ip ("//Users/saramarquez/Documents/ICC/6TO/Analisis de algoritmos/BloomFilter/dataset/modNames.csv");
 
     if(!ip.is_open()){
         cout << "error";
     }
     string name;
-    while (ip.good() && cont<= bloomsz/2){
+    while (ip.good() && cont<= bloomsz/3){
         getline(ip,name,'\n');
         filterA.add(name);
         filterB2.add(name);
@@ -103,6 +63,7 @@ int main(){
     //NODO A Y B
     cout<< "COMENZANDO COMUNICACION ENTRE NODO A Y B"<<endl;
     Simulation a_b (names1,names2,filterA,filterB);
+    a_b.searchTest();
     cout <<"................................................"<<endl;
     a_b.checkEquality();
     cout <<"................................................"<<endl;
@@ -114,6 +75,7 @@ int main(){
     //NODO B Y C
     cout<< "COMENZANDO COMUNICACION ENTRE NODO B Y C"<<endl;
     Simulation b_c (names1,names3,filterB2,filterC);
+    b_c.searchTest();
     cout <<"................................................"<<endl;
     b_c.checkEquality();
     cout <<"................................................"<<endl;
