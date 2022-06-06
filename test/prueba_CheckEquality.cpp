@@ -5,27 +5,17 @@
 #include <vector>
 #include "../include/BloomFilter.h"
 #include "../include/Simulation.h"
+#include "../include/universalHash.h"
 #include <algorithm>
 using namespace std;
-typedef int (*HashFunction)(string);
 
-int hashfunc3(string s)
-{
-    int hash = 0;
-    //Se itera a traves del string insertado
-    for (int i = 0; i < s.size(); i++)
-    {
-        //Se suma el valor de hash, a el valor decimal de una letra del string
-        hash = (hash + ((int)s[i]));
-        //Despues a ese valor se le hace mod el tamaño del filtro
-        hash = hash % 20;
-    }
-    return hash;
-}
+
+
 
 void prueba_CheckEquality(){
     vector<HashFunction> v;
-    v.push_back(hashfunc3);
+    HashFunction hash = h1;
+    v.push_back(hash);
 
     BloomFilter fltr(20,v);
     BloomFilter fltr2(20,v);
