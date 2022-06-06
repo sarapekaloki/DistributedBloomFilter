@@ -1,56 +1,32 @@
-//
-// Created by Sara Marquez on 22/04/22.
-//
+
 #include <iostream>
 #include <vector>
 #include "../include/BloomFilter.h"
 #include "../include/read_Data.h"
+#include "../include/universalHash.h"
 using namespace std;
-typedef int (*HashFunction)(string);
-int sz=150;
 
-// hash 3
-int hash2(string s)
-{
-    int hash = 0;
-    for (int i = 0; i < s.size(); i++)
-    {
-        hash = (hash + ((int)s[i]));
-        hash = hash % sz;
-    }
-    return hash;
-}
-// hash 4
-int hash4(string s) {
-    int hash = 5;
-    for (int i = 0; i < s.size(); i++)
-    {
-        hash = (hash * 3 + s[i]) % sz;
-    }
-    return hash % sz;
-}
-
+int sz=157;
 void blockTest(int blocks){
     vector<HashFunction> v;
+    HashFunction hash1 = h1;
+    HashFunction hash2 = h3;
+    v.push_back(hash1);
     v.push_back(hash2);
-    v.push_back(hash4);
     vector<string> v1;
 
     string name;
-    int cantData =sz/3;
+    int cantData =50;
     int blockSize = (cantData)/blocks;
     vector<string> lookFor;
     BloomFilter fltr(sz,v);
 
     vector<string> data = getData(cantData);
 
-
     for (int i = 0; i < blocks; ++i) {
         int cont =0;
         lookFor.clear();
         fltr.filter.reset();
-
-
         while (cont< cantData){
             if(cont>=blockSize-((cantData)/blocks)  && cont<= blockSize){
                 lookFor.push_back(data[cont]);
@@ -72,13 +48,13 @@ void blockTest(int blocks){
         }
         cout<< "FALSE POSITIVES BLOCK ";
         cout<< i<<": "<<countFalsePos <<endl;
-
-
     }
 
 
-    return;
-}//
-// Created by SARAMARQUEZ on 5/21/2022.
-//
 
+    return;
+}
+//int main(){
+//    blockTest(5);
+//    return 0;
+//}
